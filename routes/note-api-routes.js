@@ -6,7 +6,7 @@ module.exports = function(app) {
 
 var Storage = multer.diskStorage({ 
     destination: function (req, file, callback) { 
-        callback(null, "../MyTaskManager/public/assets/uploaded_images"); 
+        callback(null, "../public/assets/uploaded_images"); 
     }, 
     filename: function (req, file, callback) { 
         callback(null, file.originalname); 
@@ -28,10 +28,10 @@ app.post("/api/notes/new", function(req, res) {
               UserId: user.id
                   // UserId: 1
         }).then(function(dbPost) {
-            var responseToUser = "Notes has been successfully entered";
-            var responseJson = {fulfillmentText: responseToUser}; //currently only text, need to add in speech
-            res.setHeader('Content-Type', 'application/json'); //Requires application/json MIME type
-            res.send("/notes");
+            //var responseToUser = "Notes has been successfully entered";
+            //var responseJson = {fulfillmentText: responseToUser}; //currently only text, need to add in speech
+            //res.setHeader('Content-Type', 'application/json'); //Requires application/json MIME type
+            res.json(dbPost);
         });
     });
 });
@@ -53,8 +53,12 @@ app.post("/api/upload", function(req,res){
   });
 });
 
-app.get("/", function (req, res) { 
-    res.sendFile(__dirname + "/notes.html"); 
-}); 
+app.get("/api/notes", function(req, res) {
+    console.log(res);
+    db.Note.findAll({})
+    .then(function(dbPost) {
+    res.json(dbPost);
+    });
+  });
 
 }
